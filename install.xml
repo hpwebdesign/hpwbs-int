@@ -1,0 +1,669 @@
+<modification>
+    <name><![CDATA[HP Weight Base Shipping]]></name>
+    <code>HPWBSINT</code>
+    <version>1.0.0.0</version>
+    <link>https://hpwebdesign.io</link>
+    <author><![CDATA[HP Web Design]]></author>
+
+    <!-- language override-->
+    <file path="admin/language/en-gb/common/column_left.php">
+        <operation error="skip">
+            <search trim="true"><![CDATA[// Text]]></search>
+            <add position="after"><![CDATA[
+         $_['text_custom_shipping']           = 'HP Weight Base Shipping';
+        ]]></add>
+        </operation>
+    </file>
+    <file path="admin/language/id-id/common/column_left.php">
+        <operation error="skip">
+            <search trim="true"><![CDATA[// Text]]></search>
+            <add position="after"><![CDATA[
+      $_['text_custom_shipping']           = 'HP Weight Base Shipping';
+            ]]></add>
+        </operation>
+    </file>
+    <file path="admin/controller/common/column_left.php">
+        <operation error="skip">
+            <search><![CDATA[$hpwd = array();]]></search>
+            <add position="before"><![CDATA[
+            if ($this->user->hasPermission('access', 'extension/module/custom_shipping')) {
+                $data['menus'][] = array(
+                'id'       => 'menu-hpcs',
+                'icon'	   => 'fa fa-truck',
+                'name'	   => $this->language->get('text_custom_shipping'),
+                'href'     => $this->url->link('extension/module/custom_shipping', 'user_token=' . $this->session->data['user_token'], true),
+                'children' => array()
+                );
+            }]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[$hpwd = array();]]></search>
+            <add position="after"><![CDATA[
+            if ($this->user->hasPermission('access', 'extension/module/custom_shipping')) {
+                $hpwd[] = array(
+                    'name'	   => $this->language->get('text_custom_shipping'),
+                    'href'     => $this->url->link('extension/module/custom_shipping', 'user_token=' . $this->session->data['user_token'], true),
+                    'children' => array()
+                );
+            }]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/language/en-gb/{product/product.php,checkout/cart.php}">
+        <operation error="skip">
+            <search trim="true"><![CDATA[// Text]]></search>
+            <add position="after"><![CDATA[
+     $_['text_shipping_estimation']  = 'Shipping Estimation';
+     $_['text_shipping_to']           = 'Shipping to';
+     $_['text_city_regency']          = 'Zone';
+    ]]></add>
+        </operation>
+    </file>
+
+    <file path="admin/language/en-gb/catalog/product.php">
+        <operation error="skip">
+            <search trim="true"><![CDATA[// Text]]></search>
+            <add position="after"><![CDATA[
+     $_['entry_lama_pekerjaan']           = 'Duration of Work';
+    ]]></add>
+        </operation>
+    </file>
+
+
+    <file path="catalog/language/en-gb/checkout/checkout.php">
+        <operation error="skip">
+            <search trim="true"><![CDATA[// Text]]></search>
+            <add position="after"><![CDATA[
+      $_['text_tanggal_pengiriman']           = 'Shipping Date';
+    ]]></add>
+        </operation>
+    </file>
+
+    <file path="admin/controller/catalog/product.php">
+        <operation error="skip">
+            <search><![CDATA[
+                if (isset($this->request->post['model'])) {
+                ]]></search>
+            <add position="before"><![CDATA[
+           if (isset($this->request->post['etd'])) {
+            $data['etd'] = $this->request->post['etd'];
+        } elseif (!empty($product_info)) {
+            $data['etd'] = $product_info['etd'];
+        } else {
+            $data['etd'] = '';
+        }
+               ]]></add>
+        </operation>
+    </file>
+
+    <file path="admin/view/template/catalog/product_form.twig">
+
+
+        <operation error="skip">
+            <search><![CDATA[
+            <li><a href="#tab-data" data-toggle="tab">{{ tab_data }}</a></li>
+                ]]></search>
+            <add position="after"><![CDATA[
+           <li><a href="#tab-pengerjaan" data-toggle="tab">{{ entry_lama_pekerjaan }}</a></li>
+               ]]></add>
+        </operation>
+
+        <operation error="skip">
+            <search><![CDATA[
+           <div class="tab-pane" id="tab-data">
+                ]]></search>
+            <add position="before"><![CDATA[
+          <div class="tab-pane" id="tab-pengerjaan">
+             <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-pengerjaan"><span data-toggle="tooltip" title="{{ entry_lama_pekerjaan }}">{{ entry_lama_pekerjaan }}</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="etd" value="{{ etd }}" placeholder="2 - 3" id="input-etd" class="form-control"/>
+                </div>
+              </div>
+             </div>
+               ]]></add>
+        </operation>
+    </file>
+
+    <file path="admin/model/catalog/product.php">
+        <operation error="skip">
+            <search><![CDATA[
+                $product_id = $this->db->getLastId();
+                ]]></search>
+            <add position="after"><![CDATA[
+          if (isset($data['etd'])) {
+        $this->db->query("UPDATE " . DB_PREFIX . "product SET etd='".$data['etd']."' WHERE product_id = '" . (int)$product_id . "'");
+        }
+               ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+                public function editProduct($product_id, $data) {
+                ]]></search>
+            <add position="after"><![CDATA[
+          if (isset($data['etd'])) {
+        $this->db->query("UPDATE " . DB_PREFIX . "product SET etd='".$data['etd']."' WHERE product_id = '" . (int)$product_id . "'");
+        }
+               ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+                $data['sku'] = '';
+                ]]></search>
+            <add position="after"><![CDATA[
+          $data['etd'] = '';
+               ]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/model/catalog/product.php">
+        <operation error="skip">
+            <search><![CDATA[
+                public function getTotalProductSpecials() {
+                ]]></search>
+            <add position="before"><![CDATA[
+         public function getCustomShippings(){
+        $query = $this->db->query("SELECT * FROM custom_shipping ORDER BY zone_name ASC");
+        return $query->rows;
+    }
+  public function getCustomShipping($shipping_id){
+    $query = $this->db->query("SELECT * FROM custom_shipping WHERE custom_shipping_id='" . (int)$shipping_id . "'");
+    return $query->row;
+  }
+    public function getEtd($product_id){
+    $query = $this->db->query("SELECT * FROM  " . DB_PREFIX . "product WHERE product_id ='" . (int)$product_id . "'");
+    if(!empty($query->row['etd'])){
+    $etds = explode("-",$query->row['etd']);
+    if (count($etds) > 1){
+      $etd = $etds[1];
+      }else{
+      $etd = $query->row['etd'];
+      }
+    }else{
+      $etd = 0;
+    }
+    return $etd;
+  }
+               ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/controller/product/product.php">
+        <operation error="skip">
+            <search><![CDATA[
+                $data['tags'] = array();
+                ]]></search>
+            <add position="before"><![CDATA[
+           // HPCS
+            $this->load->language('extension/shipping/custom_shipping');
+
+            $this->document->addStyle('catalog/view/javascript/bootstrap-select.min.css');
+            $this->document->addScript('catalog/view/javascript/bootstrap-select.js');
+            $this->document->addStyle('catalog/view/javascript/estimasi.css');
+            $data['estimasi'] = array();
+            //$etd = $this->model_catalog_product->getEtd($this->request->get['product_id']);
+            $data['etd'] = $this->model_catalog_product->getEtd($this->request->get['product_id']);
+            $customshipping = $this->model_catalog_product->getCustomShippings();
+
+            foreach ($customshipping as $custom) {
+
+                     if(!empty($custom['etd'])){
+                      $etds = explode("-",$custom['etd']);
+
+                         if (count($etds) > 1){
+                            $etd = $etds[1];
+                          } else {
+                            $etd = $custom['etd'];
+                          }
+                      } else {
+                        $etd = 0;
+                      }
+
+                 $data['estimasi'][] = array(
+                     'id' => $custom['custom_shipping_id'],
+                     'zone' => $custom['zone_name'],
+                     'country' => $custom['country_name'],
+                     'city' => $custom['city_name'],
+                     'etd' => $etd
+                 );
+
+            }
+               ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+              public function review() {
+              ]]></search>
+            <add position="before"><![CDATA[
+          public function custom()
+  {
+    $json = array();
+    $id = $this->request->get['id'];
+    $this->load->model('catalog/product');
+    $custom = $this->model_catalog_product->getCustomShipping($id);
+    if(!empty($custom['etd'])){
+      $etds = explode("-",$custom['etd']);
+      if (count($etds) > 1){
+      $etd = $etds[1];
+      }else{
+      $etd = $custom['etd'];
+      }
+      }else{
+        $etd = 0;
+      }
+    $json['etd'] = $etd;
+    $this->session->data['custom_shipping'] = $id;
+
+    $this->response->addHeader('Content-Type: application/json');
+    $this->response->setOutput(json_encode($json));
+  }
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/view/theme/*/template/product/product.twig">
+        <operation error="skip">
+            <search><![CDATA[
+                 {% if minimum > 1 %}
+                ]]></search>
+            <add position="before"><![CDATA[
+          <div class="product-info__row div-top div-bottom" style="border-bottom: 0px;">
+       <span><i class="fa fa-truck"></i> {{ text_shipping_to }}</span>
+        <span class="shipping-destination-wrapper">
+            <form method="get">
+                <label class="fab-input__label">{{ text_city_regency }}</label>
+                <select id="shipping-destination" name="shipping-destination" class="selectpicker show-tick" data-live-search="true" data-live-search-normalize="true">
+                    <option data-hidden="true">{{ text_select_shiping_location }}</option>
+                    {% for custom in estimasi %}
+                <option value="{{ custom.id }}">{{ custom.city }}, {{ custom.zone }}, {{ custom.country }}</option>
+                {% endfor %}
+            </select>
+            </form>
+        </span>
+    <div class="product-info__row__text">
+        <table class="fab-table-shipping-info font-12">
+            <tbody><tr>
+                <td class="text-gray font-12">
+                    <span>{{ text_shipping_estimation }}</span>
+                </td>
+               <td id="delivery-date" class="text-bold text-right fab-text-action"></td>
+            </tr>
+        </tbody></table>
+    </div>
+</div>
+               ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+                {{ footer }}
+                ]]></search>
+            <add position="before"><![CDATA[
+            <script>
+            $('select[name=\'shipping-destination\']').on('change', function() {
+            $.ajax({
+    url: 'index.php?route=product/product/custom&id=' + this.value,
+    dataType: 'json',
+    beforeSend: function() {
+      $('select[name=\'shipping-destination\']').prop('disabled', true);
+    },
+    complete: function() {
+      $('select[name=\'shipping-destination\']').prop('disabled', false);
+
+    },
+    success: function(json) {
+     var someDate = new Date();
+          var numberOfDaysToAdd = parseInt(json['etd']);
+
+          var etd = parseInt({{ etd }});
+
+          console.log(etd);
+          var plusDate = numberOfDaysToAdd + etd;
+           someDate.setDate(someDate.getDate() + plusDate);
+
+            var dd = someDate.getDate();
+          var mm = someDate.getMonth() + 1;
+          var y = someDate.getFullYear();
+          let day = '';
+          let m = '';
+
+switch (someDate.getDay()) {
+  case 0:
+    day = "Sunday";
+    break;
+  case 1:
+    day = "Monday";
+    break;
+  case 2:
+     day = "Tuesday";
+    break;
+  case 3:
+    day = "Wednesday";
+    break;
+  case 4:
+    day = "Thursday";
+    break;
+  case 5:
+    day = "Friday";
+    break;
+  case 6:
+    day = "Saturday";
+}
+
+switch (mm) {
+    case 1: m = 'Jan'; break;
+    case 2: m = 'Feb'; break;
+    case 3: m = 'Mar'; break;
+    case 4: m = 'Apr'; break;
+    case 5: m = 'May'; break;
+    case 6: m = 'Jun'; break;
+    case 7: m = 'Jul'; break;
+    case 8: m = 'Aug'; break;
+    case 9: m = 'Sep'; break;
+    case 10: m = 'Oct'; break;
+    case 11: m = 'Nov'; break;
+    case 12: m = 'Dec'; break;
+    default: break;
+}
+          var someFormattedDate = day +', '+ dd + ' '+ m + ' '+ y;
+            var data = "{{ etd }}" + this.value;
+            $('#delivery-date').html(someFormattedDate);
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+
+
+            });
+             $('select[name=\'shipping-destination\']').trigger('change');
+               $(document).ready(function() {
+             $('.selectpicker').prop("disabled", false);
+              $('.selectpicker').selectpicker({
+    liveSearch: true
+  });
+  },5000);
+           </script>
+               ]]></add>
+        </operation>
+
+    </file>
+
+    <file path="catalog/controller/checkout/checkout.php">
+        <operation error="skip">
+            <search index="0"><![CDATA[$this->load->language('checkout/checkout');]]></search>
+            <add position="after"><![CDATA[
+            $this->load->language('extension/shipping/custom_shipping');
+                ]]></add>
+        </operation>
+    </file>
+
+
+
+    <file path="catalog/controller/checkout/cart.php">
+        <operation error="skip">
+            <search index="0"><![CDATA[$this->load->language('checkout/cart');]]></search>
+            <add position="after"><![CDATA[
+            $this->load->language('extension/shipping/custom_shipping');
+                ]]></add>
+        </operation>
+
+        <operation error="skip">
+            <search><![CDATA[
+              foreach ($products as $product) {
+              ]]></search>
+            <add position="after"><![CDATA[
+    // HPCS
+
+      $this->document->addStyle('catalog/view/javascript/estimasi.css');
+      $this->document->addStyle('catalog/view/javascript/bootstrap-select.min.css');
+      $this->document->addScript('catalog/view/javascript/bootstrap-select.js');
+
+      $data['custom_id']  = '';
+
+      $data['estimasi'] = array();
+
+      $data['custom_id'] = $this->session->data['custom_shipping'];
+
+      $this->load->model('catalog/product');
+
+      $custom_etd =  $this->model_catalog_product->getEtd($product['product_id']);
+
+      $customshipping = $this->model_catalog_product->getCustomShippings();
+      foreach ($customshipping as $custom) {
+         if(!empty($custom['etd'])){
+              $etds = explode("-",$custom['etd']);
+              if (count($etds) > 1){
+                  $etd = $etds[1];
+              } else {
+                  $etd = $custom['etd'];
+              }
+          } else {
+            $etd = 0;
+          }
+
+             $data['estimasi'][] = array(
+              'id' 			=> $custom['custom_shipping_id'],
+              'city' 		=> $custom['city_name'],
+              'zone' 	=> $custom['zone_name'],
+              'country' 	=> $custom['country_name'],
+              'etd'	 		=> $etd
+             );
+
+        }
+    // END HPCS]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+              'cart_id'   => $product['cart_id'],
+              ]]></search>
+            <add position="after"><![CDATA['etd'     => isset($this->session->data['custom_shipping']) ? $custom_etd : '',]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/view/theme/journal3/template/checkout/cart.twig">
+        <operation error="skip">
+            <search><![CDATA[
+              <div class="cart-page">
+              ]]></search>
+            <add position="before"><![CDATA[
+          <div class="product-info__row div-top div-bottom" style="border-bottom: 0px;">
+       <span><i class="fa fa-truck"></i> {{ text_shipping_to }}</span>
+    <span class="product-info__row__text">
+        <div class="shipping-destination-wrapper">
+            <form method="get">
+                <label class="fab-input__label">{{ text_city_regency }}</label>
+                <select id="shipping-destination" name="shipping-destination" class="selectpicker show-tick" data-live-search="true" data-live-search-normalize="true" title="{{ text_city_regency }}">
+                    <option data-hidden="true">{{ text_select_shiping_location }}</option>
+                    {% for custom in estimasi %}
+               {% if custom.id==custom_id %}
+                <option value="{{ custom.etd }}" selected="selected">{{ custom.city }}, {{ custom.zone }}, {{ custom.country }}</option>
+                {% else %}
+                <option value="{{ custom.etd }}">{{ custom.city }}, {{ custom.zone }}, {{ custom.country }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            </form>
+        </span>
+    </div>
+</div>
+            ]]></add>
+        </operation>
+    </file>
+
+<file path="catalog/view/theme/*/template/checkout/cart.twig">
+        <operation error="skip">
+            <search><![CDATA[<div class="table-responsive">]]></search>
+            <add position="before"><![CDATA[
+          <div class="product-info__row div-top div-bottom" style="border-bottom: 0px;">
+       <span><i class="fa fa-truck"></i> {{ text_shipping_to }}</span>
+    <span class="product-info__row__text">
+        <div class="shipping-destination-wrapper">
+            <form method="get">
+                <label class="fab-input__label">{{ text_city_regency }}</label>
+                <select id="shipping-destination" name="shipping-destination" class="selectpicker show-tick" data-live-search="true" data-live-search-normalize="true" title="{{ text_city_regency }}">
+                    <option data-hidden="true">{{ text_select_shiping_location }}</option>
+                    {% for custom in estimasi %}
+               {% if custom.id==custom_id %}
+                <option value="{{ custom.etd }}" selected="selected">{{ custom.city }}, {{ custom.zone }}, {{ custom.country }}</option>
+                {% else %}
+                <option value="{{ custom.etd }}">{{ custom.city }}, {{ custom.zone }}, {{ custom.country }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            </form>
+        </span>
+    </div>
+</div>
+            ]]></add>
+        </operation>
+
+
+        <operation error="skip">
+            <search><![CDATA[
+               <td class="text-right">{{ product.total }}</td>
+              ]]></search>
+            <add position="after"><![CDATA[
+           <script>
+            $('select[name=\'shipping-destination\']').on('change', function() {
+            var someDate = new Date();
+          var numberOfDaysToAdd = parseInt(this.value);
+
+          var etd = parseInt({{ product.etd }});
+
+          console.log(etd);
+          var plusDate = numberOfDaysToAdd + etd;
+           someDate.setDate(someDate.getDate() + plusDate);
+            var dd = someDate.getDate();
+          var mm = someDate.getMonth() + 1;
+          var y = someDate.getFullYear();
+          let day = '';
+          let m = '';
+
+switch (someDate.getDay()) {
+  case 0:
+    day = "Sunday";
+    break;
+  case 1:
+    day = "Monday";
+    break;
+  case 2:
+     day = "Tuesday";
+    break;
+  case 3:
+    day = "Wednesday";
+    break;
+  case 4:
+    day = "Thursday";
+    break;
+  case 5:
+    day = "Friday";
+    break;
+  case 6:
+    day = "Saturday";
+}
+
+switch (mm) {
+    case 1: m = 'Jan'; break;
+    case 2: m = 'Feb'; break;
+    case 3: m = 'Mar'; break;
+    case 4: m = 'Apr'; break;
+    case 5: m = 'May'; break;
+    case 6: m = 'Jun'; break;
+    case 7: m = 'Jul'; break;
+    case 8: m = 'Aug'; break;
+    case 9: m = 'Sep'; break;
+    case 10: m = 'Oct'; break;
+    case 11: m = 'Nov'; break;
+    case 12: m = 'Dec'; break;
+    default: break;
+}
+          var someFormattedDate = day +', '+ dd + ' '+ m + ' '+ y;
+            var data = "{{ etd }}" + this.value;
+            $('#delivery-date{{product.cart_id}}').html(someFormattedDate);
+            });
+             $('select[name=\'shipping-destination\']').trigger('change');
+           </script>
+            ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+               {{ footer }}
+              ]]></search>
+            <add position="before"><![CDATA[
+           <script>
+            $('.selectpicker').selectpicker({
+    liveSearch: true
+  });
+           </script>
+            ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+               <td class="text-left">{{ column_quantity }}</td>
+              ]]></search>
+            <add position="after"><![CDATA[
+           <td class="text-left">{{ text_shipping_estimation }}</td>
+            ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+              <td class="text-right">{{ product.price }}</td>
+              ]]></search>
+            <add position="before"><![CDATA[
+          <td id="delivery-date{{product.cart_id}}" class="text-right delivery-date"></td>
+            ]]></add>
+        </operation>
+
+    </file>
+
+    <file path="catalog/controller/checkout/confirm.php">
+        <operation error="skip">
+            <search><![CDATA[
+              foreach ($this->cart->getProducts() as $product) {
+              ]]></search>
+            <add position="after"><![CDATA[
+            if(isset($this->session->data['shipping_method']['etd'])) {
+                      $this->load->model('catalog/product');
+                      $etds     = $this->session->data['shipping_method']['etd'];
+                      $etd      = explode("-",$etds);
+                      $product_etd = $this->model_catalog_product->getEtd($product['product_id']);
+                      $jumlah   = (int)$etd[1] + (int)$product_etd;
+                      $tgl      = date('Y-m-d');
+                      $tgl2     = date('Y-m-d', strtotime('+'.$jumlah.' days', strtotime($tgl)));
+            }
+            ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+             'cart_id'    => $product['cart_id'],
+              ]]></search>
+            <add position="after"><![CDATA[
+             'tgl_pengiriman' => isset($this->session->data['shipping_method']['etd']) ? $tgl2 : '',
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/view/theme/*/template/checkout/confirm.twig">
+        <operation error="skip">
+            <search><![CDATA[
+              <td class="text-right">{{ column_quantity }}</td>
+              ]]></search>
+            <add position="after"><![CDATA[
+           <td class="text-right">{{ text_tanggal_pengiriman }}</td>
+            ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+             <td class="text-right">{{ product.quantity }}</td>
+              ]]></search>
+            <add position="after"><![CDATA[
+           <td class="text-right">{{ product.tgl_pengiriman|date("D, d M Y") }}</td>
+            ]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[
+            <td colspan="4" class="text-right"><strong>{{ total.title }}:</strong></td>
+              ]]></search>
+            <add position="replace"><![CDATA[
+           <td colspan="5" class="text-right"><strong>{{ total.title }}:</strong></td>
+            ]]></add>
+        </operation>
+    </file>
+</modification>

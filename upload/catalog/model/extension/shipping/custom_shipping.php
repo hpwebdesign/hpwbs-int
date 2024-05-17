@@ -1,0 +1,117 @@
+<?php
+class ModelExtensionShippingCustomShipping extends Model {
+  function getQuote($address) {
+    $this->load->language('extension/shipping/custom_shipping');
+
+        $query = $this->db->query("SELECT DISTINCT * FROM custom_shipping WHERE zone_id = '" . (int)$address['zone_id'] . "'");
+        
+        $costs = array();
+        
+     if ($query->num_rows) {
+      $status = true;
+    } else {
+          
+               
+           $query = $this->db->query("SELECT DISTINCT * FROM custom_shipping WHERE country_id ='".(int)$address['country_id']."' AND zone_id = '0'");
+              
+            if ($query->num_rows) {
+                $status = true;  
+            } else {
+                $status = false;
+            }
+             
+    }
+
+        
+        
+    $method_data = array();
+
+    if ($status) {
+      $costs = $query->row;
+      $quote_data = array();
+            
+               $berat = $this->cart->getWeight();
+               $unit=$this->weight->getUnit($this->config->get('config_weight_class_id'));
+
+            // format in KG
+                if($unit == 'g') {
+               $berat = round($berat / 1000,1,PHP_ROUND_HALF_UP);
+               } elseif ($unit == 'kg') {
+                $berat = round($berat,1,PHP_ROUND_HALF_UP);
+               }
+           
+            $cost = $costs['rate'];
+            
+            if($costs['rate_type'] == "perkg") {
+                $berat = explode('.',$berat);
+
+                if(empty($berat[1]))
+                { 
+                    $berat[1]=0;
+                   }
+                    /* penentuan harga */
+
+                if ((float)$berat[0] < 1){
+                $cost = $cost;  
+                $berat=$berat[0].".".$berat[1]; 
+                }
+                elseif((float)$berat[1]<=3){
+                $cost = $berat[0] * $cost;
+                $berat=$berat[0];
+                }
+                else{
+                $cost = ($berat[0]+1) * $cost;
+                $berat=$berat[0].".".$berat[1];
+                }
+            } else {
+              if ($unit == 'kg'){
+                if ($berat > $costs['total_weight']){
+                    $selisih = $berat - $costs['total_weight'];
+                    $cost = $costs['rate'] + ($selisih * $costs['cost'] / $costs['for_every']);
+                } else {
+                   $cost = $costs['rate'];
+                }
+              } else{
+                 $cost = $costs['rate'];
+              }
+            }
+
+
+             $this->load->model('tool/image');
+             if ($this->config->get('c_shipping_image') && is_file(DIR_IMAGE . $this->config->get('c_shipping_image'))) {
+      $thumb =  $this->model_tool_image->resize($this->config->get('c_shipping_image'), 60, 30);
+    } else {
+      $thumb = $this->model_tool_image->resize('no_image.png', 60, 30);
+    }
+             if ($this->config->get('c_shipping_image') && substr($this->config->get('c_shipping_image'),0,4) != 'http') {
+                 $image = $thumb;
+                } else {
+                 $image = $thumb;
+                }
+      $quote_data['custom_shipping'] = array(
+        'code'         => 'custom_shipping.custom_shipping',
+        'title'        => $this->config->get('c_shipping_description') ? $this->config->get('c_shipping_description') : $this->language->get('text_description'),
+        'cost'         => $cost,
+        'text_kg'      => $this->language->get('text_kg'),
+        'text_day'     => $this->language->get('text_day'),
+        'weight'       => $berat,
+        'etd'          => $costs['etd'],
+        'image'        => $image,
+        'tax_class_id' => $this->config->get('shipping_custom_shipping_tax_class_id'),
+        'text'         => $this->currency->format($this->tax->calculate($cost, $this->config->get('shipping_custom_shipping_tax_class_id'), $this->config->get('config_tax')), $this->session->data['currency'])
+      );
+            
+               
+
+      $method_data = array(
+        'code'       => 'custom_shipping',
+        'title'      => $this->config->get('c_shipping_name') ? $this->config->get('c_shipping_name') : $this->language->get('text_title'),
+        'quote'      => $quote_data,
+        'sort_order' => $this->config->get('shipping_custom_shipping_sort_order'),
+        'error'      => false
+      );
+    }
+
+    return $method_data;
+  }
+}

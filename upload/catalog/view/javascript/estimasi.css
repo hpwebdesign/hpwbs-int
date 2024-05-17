@@ -1,0 +1,185 @@
+.div-bottom {
+ border-bottom:1px solid #ebebeb
+}
+.div-top {
+ border-top:1px solid #ebebeb
+}
+.product-info__row {
+    padding: 8px 0
+}
+
+.product-info__row:first-child {
+    border-top-color: #ebebeb
+}
+
+.product-info__row .product-info__row__icon {
+    color: #008585;
+    width: 15px;
+    height: 20px;
+    text-align: center;
+    float: left;
+    line-height: 20px
+}
+
+/*
+.product-info__row .product-info__row__text {
+    padding-left: 22px
+}
+*/
+
+.shipping-destination-wrapper {
+    margin-bottom: 10px
+}
+.shipping-destination-wrapper .select2-container:before {
+    content: "Pengiriman ke";
+    float: left;
+    line-height: 33px;
+    margin-right: 8px
+}
+
+.select2-container--open .select2-dropdown--below,
+.select2-container--open .select2-dropdown--above {
+    z-index: 1;
+    border: 1px solid #008585 !important;
+    border-radius: 3px !important;
+    box-shadow: 0 0 7px 0 #008585
+}
+
+.shipping-destination-wrapper .select2-container--default .select2-selection--single {
+    border: 0
+}
+
+.shipping-destination-wrapper .select2-container .select2-selection--single {
+    height: 35px
+}
+
+.shipping-destination-wrapper .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 33px;
+    padding-left: 0;
+    border-bottom: 2px solid #008585
+}
+
+.shipping-destination-wrapper .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border: 0;
+    top: 0;
+    font-size: 24px;
+    left: 5px;
+    color: #008585
+}
+
+.shipping-destination-wrapper .select2-container--default .select2-selection--single .select2-selection__arrow b:before {
+    content: '\e615';
+    font-family: 'icons-blank-theme'
+}
+
+.shipping-destination-wrapper .select2-container--default .select2-selection--single .select2-selection__arrow {
+    top: 5px;
+    right: 3px
+}
+.fab-input__label {
+    line-height: 20px;
+    display: none;
+    margin-bottom: .5em
+}
+@media screen and (min-width:768px) {
+    .select2-container--open .select2-dropdown--below,
+    .select2-container--open .select2-dropdown--above {
+        width: 225px !important;
+        left: 90px !important
+    }
+}
+
+
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border-top: 0 solid #008585 !important;
+    border-bottom: 2px solid #008585 !important;
+    border-left: 0 solid #008585 !important;
+    border-right: 0 solid #008585 !important;
+    border-radius: 0;
+    margin-bottom: 5px
+}
+
+.select2-search--dropdown .select2-search__field {
+    border-radius: 4px
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #008585 !important
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: #008585 !important;
+    color: #fff !important
+}
+
+@media(max-width:320px) {
+    .select2-container {
+        width: 265px !important
+    }
+    .select2-container--open .select2-dropdown--below,
+    .select2-container--open .select2-dropdown--above {
+        width: 185px !important
+    }
+}
+
+@media(max-width:767px) {
+    .select2-container--open .select2-dropdown--below,
+    .select2-container--open .select2-dropdown--above {
+        top: 0
+    }
+}
+.fab-table-shipping-info>tbody>tr>td {
+    padding: 0 10px;
+    border: 0 !important
+}
+.font-12 {
+ font-size:12px
+}
+.text-normal {
+ font-weight:normal
+}
+.text-bold {
+ font-weight:bold
+}
+.text-italic {
+ font-style:italic
+}
+.text-uppercase {
+ text-transform:uppercase
+}
+.text-left {
+ text-align:left
+}
+.text-center {
+ text-align:center
+}
+.text-right {
+ text-align:right
+}
+.text-uppercase {
+ text-transform:uppercase
+}
+.text-capitalize {
+ text-transform:capitalize
+}
+.text-primary {
+ color:#da3a43 !important
+}
+.text-secondary {
+ color:#008585 !important
+}
+.text-tertiary {
+ color:#ffd41c !important
+}
+.text-green {
+ color:green
+}
+.text-gray {
+ color:gray
+}
+.text-lightgray {
+ color:#bbb
+}
+.product-info__row span i { color: rgba(16, 137, 7, 1); }
+.shipping-destination-wrapper { display: inline-block; }
