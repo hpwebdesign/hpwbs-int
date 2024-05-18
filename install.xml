@@ -1,5 +1,5 @@
 <modification>
-    <name><![CDATA[HP Weight Base Shipping]]></name>
+    <name><![CDATA[HP Weight Based Shipping]]></name>
     <code>HPWBSINT</code>
     <version>1.0.0.0</version>
     <link>https://hpwebdesign.io</link>
@@ -10,7 +10,7 @@
         <operation error="skip">
             <search trim="true"><![CDATA[// Text]]></search>
             <add position="after"><![CDATA[
-         $_['text_custom_shipping']           = 'HP Weight Base Shipping';
+         $_['text_custom_shipping']           = 'HP Weight Based Shipping';
         ]]></add>
         </operation>
     </file>
@@ -18,7 +18,7 @@
         <operation error="skip">
             <search trim="true"><![CDATA[// Text]]></search>
             <add position="after"><![CDATA[
-      $_['text_custom_shipping']           = 'HP Weight Base Shipping';
+      $_['text_custom_shipping']           = 'HP Weight Based Shipping';
             ]]></add>
         </operation>
     </file>
@@ -262,19 +262,19 @@
                $berat = round($berat / 1000,1,PHP_ROUND_HALF_UP);
                } elseif ($unit == 'kg') {
                 $berat = round($berat,1,PHP_ROUND_HALF_UP);
-               }        
+               }
             if($custom['rate_type'] == "perkg") {
                 $berat = explode('.',$berat);
 
                 if(empty($berat[1]))
-                { 
+                {
                     $berat[1]=0;
                    }
                     /* penentuan harga */
 
                 if ((float)$berat[0] < 1){
-                $cost = $cost;  
-                $berat=$berat[0].".".$berat[1]; 
+                $cost = $cost;
+                $berat=$berat[0].".".$berat[1];
                 }
                 elseif((float)$berat[1]<=3){
                 $cost = $berat[0] * $cost;

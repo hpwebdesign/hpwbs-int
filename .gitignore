@@ -8,3 +8,5 @@ build/
 vendor/
 RoboFile.php
 .env
+composer.json
+composer.lock
