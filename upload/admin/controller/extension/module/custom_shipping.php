@@ -230,11 +230,11 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		foreach ($results as $result) {
 			$data['custom_shippings'][] = array(
 				'custom_shipping_id'  => $result['custom_shipping_id'],
-				'total'               => $result['total'],
+				'total'               => $this->currency->format($result['total'], $this->config->get('config_currency')),
 				'country_name'       => $result['country_name'],
 				'zone_name'           => $result['zone_name'],
 				'city_name'           => $result['city_name'],
-				'rate'                => $result['rate'],
+				'rate'                => $this->currency->format($result['rate'], $this->config->get('config_currency')),
 				'etd'                 => $result['etd'],
 				'edit'                => $this->url->link('extension/module/custom_shipping/edit', 'user_token=' . $this->session->data['user_token'] . '&custom_shipping_id=' . $result['custom_shipping_id'] . $url, true)
 			);
@@ -580,7 +580,8 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		}
 
 		$this->load->model('design/layout');
-
+		$data['currency_symbol_left'] = $this->currency->getSymbolLeft($this->config->get('config_currency'));
+		$data['currency_symbol_right'] = $this->currency->getSymbolRight($this->config->get('config_currency'));
 		$data['layouts'] = $this->model_design_layout->getLayouts();
 
 		$data['header'] = $this->load->controller('common/header');

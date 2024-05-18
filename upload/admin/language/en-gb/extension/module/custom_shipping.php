@@ -1,8 +1,8 @@
 <?php
 // Heading
-$_['heading_title']          = '<span style="border-radius:2px;color:#fff;background:#8fbb6c;padding:2px 5px;">HP</span> Weight Base Shipping';
+$_['heading_title']          = '<span style="border-radius:2px;color:#fff;background:#8fbb6c;padding:2px 5px;">HP</span> Weight Based Shipping';
 
-$_['heading_title2']    = 'Weight Base Shipping';
+$_['heading_title2']    = 'Weight Based Shipping';
 
 // Column
 $_['column_rate']          = 'Rate';
@@ -58,10 +58,10 @@ $_['tab_setting']             = 'Setting';
 $_['error_permission'] = 'Warning: You do not have permission to modify information module!';
 
 // Text
-$_['text_success_installed']    = 'Success: Weight Base Shipping Extension related database install successfully!';
-$_['text_success_uninstalled']  = 'Success: Weight Base Shipping Extension related database uninstalled successfully!';
-$_['text_install_message']      = 'Missing Database Tables for <b>Weight Base Shipping</b>, Please Click Here to upload it Now!';
-$_['text_uninstall_message']    = 'You have installed <b>Weight Base Shipping</b>. Click Here to uninstall it Now';
+$_['text_success_installed']    = 'Success: Weight Based Shipping Extension related database install successfully!';
+$_['text_success_uninstalled']  = 'Success: Weight Based Shipping Extension related database uninstalled successfully!';
+$_['text_install_message']      = 'Missing Database Tables for <b>Weight Based Shipping</b>, Please Click Here to upload it Now!';
+$_['text_uninstall_message']    = 'You have installed <b>Weight Based Shipping</b>. Click Here to uninstall it Now';
 $_['text_upgrade']              = 'Install Database';
 $_['text_downgrade']            = 'Uninstall Database';
 
@@ -76,7 +76,7 @@ $_['text_found_database']    = 'Database Found!';
 $_['error_warning']          = 'Warning: Please check the form carefully for errors!';
 
 // Success
-$_['text_success_seting_changed']  = 'Success: You have modified Weight Base Shipping setting.';
+$_['text_success_seting_changed']  = 'Success: You have modified Weight Based Shipping setting.';
 
 
 $_['text_validation']           = 'Store Validation';
