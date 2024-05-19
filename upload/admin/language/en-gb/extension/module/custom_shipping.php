@@ -9,7 +9,7 @@ $_['column_rate']          = 'Rate';
 $_['column_zone']          = 'Zone';
 $_['column_city']          = 'City';
 $_['column_country']       = 'Country';
-$_['column_etd']           = 'ETD';
+$_['column_etd']           = 'ETD (Days)';
 $_['column_total']         = 'Total';
 $_['column_action']        = 'Action';
 
@@ -34,11 +34,12 @@ $_['entry_shipping_description'] = 'Shipping Description';
 $_['help_cost']           = 'Additional cost to be applied';
 $_['help_total_weight']   = 'Total Weight to apply flat rate above';
 $_['help_for_every']  	  = 'Next weight range';
-$_['help_rate']           = 'Rate per KG for shipment package in Rupiah.';
+$_['help_rate']           = 'Rate per KG for a shipment package.';
 $_['help_etd']            = 'Estimated Time of Departure in days. Eg: 2 - 3, for 2 - 3 days of ETD.';
 $_['help_total']          = 'Cost checkout before this shipping active. Sub-Total amount needed before the free shipping module becomes available.';
 
 // Text
+$_['text_all_zone']       = 'All Zones';
 $_['text_flat_rate']      = 'Flat Rate';
 $_['text_per_kg']         = 'Per Kg';
 $_['text_add']            = 'Add Shipping Rate';

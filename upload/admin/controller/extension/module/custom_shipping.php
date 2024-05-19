@@ -4,26 +4,24 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 	private $v_d 			= '';
 	private $version 		= '1.0.0.0';
 	private $extension_code = 'hpwbsint';
-	private $extension_type = 'i0';
+	private $extension_type = 'io';
 	private $domain 		= '';
 
 	public function index() {
 		$this->domain = str_replace("www.", "", $_SERVER['SERVER_NAME']);
 
-		$this->houseKeeping();
+//		$this->houseKeeping();
 
 		$this->language->load('extension/module/custom_shipping');
 
-		$this->rightman();
-
+//		$this->rightman();
 
 		// if($_SERVER['SERVER_NAME'] != $this->v_d) {
-		// 	$this->storeAuth();
-		// } else {
-		// 	$this->theData();
-		// }
-		$this->theData();
-
+		 if(0) {
+			 $this->storeAuth();
+		 } else {
+			 $this->theData();
+		 }
 	}
 
 	public function theData() {
@@ -580,13 +578,15 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		}
 
 		$this->load->model('design/layout');
-		$data['currency_symbol_left'] = $this->currency->getSymbolLeft($this->config->get('config_currency'));
-		$data['currency_symbol_right'] = $this->currency->getSymbolRight($this->config->get('config_currency'));
-		$data['layouts'] = $this->model_design_layout->getLayouts();
 
-		$data['header'] = $this->load->controller('common/header');
-		$data['column_left'] = $this->load->controller('common/column_left');
-		$data['footer'] = $this->load->controller('common/footer');
+		$data['currency_symbol_left'] 	= $this->currency->getSymbolLeft($this->config->get('config_currency'));
+		$data['currency_symbol_right'] 	= $this->currency->getSymbolRight($this->config->get('config_currency'));
+
+		$data['layouts'] 				= $this->model_design_layout->getLayouts();
+
+		$data['header'] 				= $this->load->controller('common/header');
+		$data['column_left'] 			= $this->load->controller('common/column_left');
+		$data['footer'] 				= $this->load->controller('common/footer');
 
 		$this->response->setOutput($this->load->view('extension/module/custom_shipping_form', $data));
 	}
@@ -600,15 +600,15 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 			$this->error['country_id'] = $this->language->get('error_country_id');
 		}
 
-		if ($this->request->post['zone_id'] == '') {
-			$this->error['zone_id'] = $this->language->get('error_zone_id');
-		}
+//		if ($this->request->post['zone_id'] == '') {
+//			$this->error['zone_id'] = $this->language->get('error_zone_id');
+//		}
 
-		if (utf8_strlen($this->request->post['rate']) < 3) {
+		if (empty($this->request->post['rate'])) {
 			$this->error['rate']= $this->language->get('error_rate');
 		}
 
-		if (utf8_strlen($this->request->post['etd']) < 1) {
+		if (empty($this->request->post['etd'])) {
 			$this->error['etd']= $this->language->get('error_etd');
 		}
 
@@ -773,55 +773,6 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		$this->response->setOutput($this->load->view('extension/module/validation', $data));
 	}
 
-	public function getTheQ($username,$order_id) {
-		$curl = curl_init();
-
-		curl_setopt_array($curl, array(
-			CURLOPT_URL => "https://api.hpwebdesign.id/rest/".$username."/".$order_id,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_ENCODING => "",
-			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 30,
-			CURLOPT_POSTFIELDS => "module_name=bundle",
-			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-		));
-
-		$response = curl_exec($curl);
-		$err = curl_error($curl);
-
-		curl_close($curl);
-
-		if ($err) {
-			echo "cURL Error #:" . $err;
-		} else {
-			$result = json_decode($response);
-		}
-		if($result)
-			return $result->results->shared_api_key;
-		else
-			return '';
-	}
-	protected function hpcs($ref = 0, $date = NULL) {
-		$pf = dirname(getcwd()).'/system/library/cache/hpcs_log';
-		if(!file_exists($pf)) {
-			fopen($pf,'w');
-		}
-		$fh = fopen($pf,'r');
-
-		if(!fgets($fh) || $ref = 1) {
-			$fh = fopen($pf, "wb");
-			if(!$fh) {
-				chmod($pf,644);
-			}
-			fwrite($fh, "// HPWD -> Dilarang mengedit isi file ini untuk tujuan cracking validasi atau tindakan terlarang lainnya".PHP_EOL);
-			$date = $date ? $date : date("d-m-Y",strtotime(date("d-m-Y").' + 1 year'));
-			fwrite($fh, $date.PHP_EOL);
-			fwrite($fh, $_SERVER['SERVER_NAME'].PHP_EOL);
-		}
-
-		fclose($fh);
-	}
 
 	private function rightman() {
 		if($this->internetAccess()) {
@@ -913,6 +864,21 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 
 		if ($contents) return $contents;
 		else return FALSE;
+	}
+
+
+	public function patch() {
+		$sqls[] = "ALTER TABLE " . DB_PREFIX . "product ADD `etd` varchar(40) AFTER `date_added`;";
+
+		foreach($sqls as $sql) {
+			$this->db->query($sql);
+			sleep(0.5);
+		}
+
+		$data['success'] = 1;
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($data));
 	}
 
 	public function install() {

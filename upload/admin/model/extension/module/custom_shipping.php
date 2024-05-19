@@ -115,10 +115,8 @@ class ModelExtensionModuleCustomShipping extends Model {
 			  PRIMARY KEY (`custom_shipping_id`)
 			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1; ";
 
-		//$sqls = "ALTER TABLE " . DB_PREFIX . "product ADD `etd` varchar(40) NULL AFTER `date_modified`;";
+		$sqls = "ALTER TABLE " . DB_PREFIX . "product ADD `etd` varchar(40) NULL AFTER `date_modified`;";
 
-
-	//	$this->db->query($sqls);
 		$this->db->query($sql);
 	}
 
