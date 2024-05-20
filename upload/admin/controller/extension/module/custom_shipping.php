@@ -27,6 +27,7 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 	public function theData() {
 
 		$url = $this->request->get['route'];
+		
 		if($this->checkDatabase()) {
 
 			$this->language->load('extension/module/custom_shipping');
@@ -164,6 +165,9 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 	}
 
 	protected function getList() {
+		$data['version'] = $this->version;
+		$data['extension_code'] = $this->extension_code;
+		$data['extension_type'] = $this->extension_type;
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
@@ -211,6 +215,7 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		$data['add'] = $this->url->link('extension/module/custom_shipping/add', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['delete'] = $this->url->link('extension/module/custom_shipping/delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['save'] = $this->url->link('extension/module/custom_shipping/save', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['uninstall'] = $this->url->link('extension/module/custom_shipping/uninstallDatabase', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
 		$data['custom_shippings'] = array();
 
@@ -229,10 +234,10 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 			$data['custom_shippings'][] = array(
 				'custom_shipping_id'  => $result['custom_shipping_id'],
 				'total'               => $this->currency->format($result['total'], $this->config->get('config_currency')),
-				'country_name'       => $result['country_name'],
+				'country_name'        => $result['country_name'],
 				'zone_name'           => $result['zone_name'],
-				'city_name'           => $result['city_name'],
-				'rate'                => $this->currency->format($result['rate'], $this->config->get('config_currency')),
+				'status'           	  => $result['status'],
+				'rate'                => ($result['rate_type'] == 'weight_range') ? '[Weight Range]' : $this->currency->format($result['rate'], $this->config->get('config_currency')),
 				'etd'                 => $result['etd'],
 				'edit'                => $this->url->link('extension/module/custom_shipping/edit', 'user_token=' . $this->session->data['user_token'] . '&custom_shipping_id=' . $result['custom_shipping_id'] . $url, true)
 			);
@@ -276,6 +281,13 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 
 		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 60, 30);
 
+		if (isset($this->request->post['c_shipping_status'])) {
+			$data['c_shipping_status'] = $this->request->post['c_shipping_status'];
+		} else if($this->config->get('c_shipping_status')) {
+			$data['c_shipping_status'] = $this->config->get('c_shipping_status');
+		} else {
+			$data['c_shipping_status'] = 0;
+		}
 
 		if (isset($this->request->post['c_shipping_name'])) {
 			$data['c_shipping_name'] = $this->request->post['c_shipping_name'];
@@ -283,6 +295,14 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 			$data['c_shipping_name'] = $this->config->get('c_shipping_name');
 		} else {
 			$data['c_shipping_name'] = '';
+		}
+
+		if (isset($this->request->post['c_shipping_placement'])) {
+			$data['c_shipping_placement'] = $this->request->post['c_shipping_placement'];
+		} else if($this->config->get('c_shipping_placement')) {
+			$data['c_shipping_placement'] = $this->config->get('c_shipping_placement');
+		} else {
+			$data['c_shipping_placement'] = '#product';
 		}
 
 		if (isset($this->request->post['c_shipping_description'])) {
@@ -350,7 +370,7 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 
 		$data['sort'] = $sort;
 		$data['order'] = $order;
-
+		$data['user_token'] = $this->session->data['user_token'];
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
@@ -470,7 +490,7 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		} elseif (!empty($custom_shipping_info)) {
 			$data['status'] = $custom_shipping_info['status'];
 		} else {
-			$data['status'] = true;
+			$data['status'] = 1;
 		}
 
 		if (isset($this->request->post['total'])) {
@@ -543,7 +563,7 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		} elseif (!empty($custom_shipping_info)) {
 			$data['rate_type'] = $custom_shipping_info['rate_type'];
 		} else {
-			$data['rate_type'] = '';
+			$data['rate_type'] = 'flat';
 		}
 		if (isset($this->request->post['total_weight'])) {
 			$data['total_weight'] = $this->request->post['total_weight'];
@@ -577,6 +597,11 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 			$data['etd'] = '';
 		}
 
+		$data['weight_range'] = [];
+		if ($custom_shipping_info) {
+			$data['weight_range'] = $this->model_extension_module_custom_shipping->getWeightRange($custom_shipping_info['custom_shipping_id']);
+		}
+
 		$this->load->model('design/layout');
 
 		$data['currency_symbol_left'] 	= $this->currency->getSymbolLeft($this->config->get('config_currency'));
@@ -600,12 +625,10 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 			$this->error['country_id'] = $this->language->get('error_country_id');
 		}
 
-//		if ($this->request->post['zone_id'] == '') {
-//			$this->error['zone_id'] = $this->language->get('error_zone_id');
-//		}
-
+		if ($this->request->post['rate_type'] != 'weight_range') {
 		if (empty($this->request->post['rate'])) {
 			$this->error['rate']= $this->language->get('error_rate');
+		}
 		}
 
 		if (empty($this->request->post['etd'])) {
@@ -657,18 +680,25 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 	public function checkDatabase() {
 		$database_not_found = $this->validateTable();
 
-		if(!$database_not_found) {
-			return true;
+		if($database_not_found) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	public function validateTable() {
 
-		$query = $this->db->query("SHOW TABLES LIKE 'custom_shipping'");
+		$queries[] = $this->db->query("SHOW TABLES LIKE '" . DB_PREFIX . "custom_shipping'");
+		$queries[] = $this->db->query("SHOW TABLES LIKE '" . DB_PREFIX . "custom_shipping_weight_range'");
 
-		return $query->num_rows;
+		$error = 0;
+
+		foreach ($queries as $query) {
+			$error += ($query->num_rows) ? 0 : 1;
+		}
+
+		return $error ? false : true;
 	}
 
 	public function uninstall() {
@@ -718,7 +748,8 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		$this->load->model('setting/setting');
 
 		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-
+			$status = isset($this->request->post['c_shipping_status']) ? $this->request->post['c_shipping_status'] : 0;
+			$this->model_setting_setting->editSettingValue('shipping_custom_shipping','shipping_custom_shipping_status', $status);
 			$this->model_setting_setting->editSetting('c_shipping', $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success_seting_changed');
@@ -868,7 +899,14 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 
 
 	public function patch() {
-		$sqls[] = "ALTER TABLE " . DB_PREFIX . "product ADD `etd` varchar(40) AFTER `date_added`;";
+		$sqls[] = "CREATE TABLE IF NOT EXISTS `custom_shipping_weight_range` (
+			  `custom_shipping_weight_range_id` int(11) NOT NULL AUTO_INCREMENT,
+			  `custom_shipping_id` int(11) NOT NULL,
+			  `from_weight` decimal(15,4) NOT NULL,
+			  `to_weight` decimal(15,4) NOT NULL,
+			  `rate` decimal(15,4) NOT NULL,
+			  PRIMARY KEY (`custom_shipping_weight_range_id`)
+			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1; ";
 
 		foreach($sqls as $sql) {
 			$this->db->query($sql);
@@ -882,7 +920,6 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 	}
 
 	public function install() {
-		// $this->installEvent();
 		$this->houseKeeping();
 	}
 

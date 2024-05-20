@@ -12,6 +12,7 @@ $_['text_select_shiping_location']  = 'Select shipping area';
 
 $_['text_shipping_to']              = 'Shipment to';
 $_['text_shipping_estimation']      = 'Shipping Estimates';
+$_['text_shipping_cost']      = 'Shipping Cost';
 $_['text_city_regency']             = 'City/Regency';
 $_['entry_lama_pekerjaan']          = 'Time of work';
 $_['text_tanggal_pengiriman']       = 'Shipping Date';

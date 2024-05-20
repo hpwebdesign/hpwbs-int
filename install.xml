@@ -164,11 +164,11 @@
                 ]]></search>
             <add position="before"><![CDATA[
          public function getCustomShippings(){
-        $query = $this->db->query("SELECT * FROM custom_shipping ORDER BY zone_name ASC");
+        $query = $this->db->query("SELECT * FROM ".DB_PREFIX."custom_shipping ORDER BY custom_shipping_id DESC");
         return $query->rows;
     }
   public function getCustomShipping($shipping_id){
-    $query = $this->db->query("SELECT * FROM custom_shipping WHERE custom_shipping_id='" . (int)$shipping_id . "'");
+    $query = $this->db->query("SELECT * FROM ".DB_PREFIX."custom_shipping WHERE custom_shipping_id='" . (int)$shipping_id . "'");
     return $query->row;
   }
     public function getEtd($product_id){
@@ -185,6 +185,10 @@
     }
     return $etd;
   }
+  public function getWeightRange($custom_shipping_id,$weight) {
+       $q = $this->db->query("SELECT * FROM ".DB_PREFIX."custom_shipping_weight_range WHERE custom_shipping_id = '".(int)$custom_shipping_id."' AND from_weight <= ".(float)$weight." AND to_weight >= ".(float)$weight." ORDER BY rate DESC");
+       return $q->row;
+  }
                ]]></add>
         </operation>
     </file>
@@ -195,45 +199,15 @@
                 ]]></search>
             <add position="before"><![CDATA[
            // HPCS
-            $this->load->language('extension/shipping/custom_shipping');
-
             $this->document->addStyle('catalog/view/javascript/bootstrap-select.min.css');
             $this->document->addScript('catalog/view/javascript/bootstrap-select.js');
             $this->document->addStyle('catalog/view/javascript/estimasi.css');
-            $data['estimasi'] = array();
-            //$etd = $this->model_catalog_product->getEtd($this->request->get['product_id']);
-            $data['etd'] = $this->model_catalog_product->getEtd($this->request->get['product_id']);
-            $customshipping = $this->model_catalog_product->getCustomShippings();
-
-            foreach ($customshipping as $custom) {
-
-                     if(!empty($custom['etd'])){
-                      $etds = explode("-",$custom['etd']);
-
-                         if (count($etds) > 1){
-                            $etd = $etds[1];
-                          } else {
-                            $etd = $custom['etd'];
-                          }
-                      } else {
-                        $etd = 0;
-                      }
-
-                 $data['estimasi'][] = array(
-                     'id' => $custom['custom_shipping_id'],
-                     'zone' => $custom['zone_name'],
-                     'country' => $custom['country_name'],
-                     'city' => $custom['city_name'],
-                     'etd' => $etd
-                 );
-
-            }
+           $data['hpwbs_status'] = $this->config->get('c_shipping_status');
+           $data['hpwbs_placement'] = $this->config->get('c_shipping_placement');
                ]]></add>
         </operation>
         <operation error="skip">
-            <search><![CDATA[
-              public function review() {
-              ]]></search>
+            <search><![CDATA[public function review() {]]></search>
             <add position="before"><![CDATA[
           public function custom()
   {
@@ -284,7 +258,7 @@
                 $cost = ($berat[0]+1) * $cost;
                 $berat=$berat[0].".".$berat[1];
                 }
-            } else {
+            } elseif ($custom['rate_type'] == "flat")  {
               if ($unit == 'kg'){
                 if ($berat > $custom['total_weight']){
                     $selisih = $berat - $custom['total_weight'];
@@ -294,6 +268,13 @@
                 }
               } else{
                  $cost = $custom['rate'];
+              }
+            } else {
+              $weight_range = $this->model_catalog_product->getWeightRange($custom['custom_shipping_id'],$berat);
+              if ($weight_range) {
+                  $cost = $weight_range['rate'];
+              } else {
+                  $cost = 0;
               }
             }
     $json['etd'] = $etd;
@@ -308,134 +289,19 @@
     </file>
     <file path="catalog/view/theme/*/template/product/product.twig">
         <operation error="skip">
-            <search><![CDATA[
-                 {% if minimum > 1 %}
-                ]]></search>
+            <search><![CDATA[{{ footer }}]]></search>
             <add position="before"><![CDATA[
-          <div class="product-info__row div-top div-bottom" style="border-bottom: 0px;">
-       <span><i class="fa fa-truck"></i> {{ text_shipping_to }}</span>
-        <span class="shipping-destination-wrapper">
-            <form method="get">
-                <label class="fab-input__label">{{ text_city_regency }}</label>
-                <select id="shipping-destination" name="shipping-destination" class="selectpicker show-tick" data-live-search="true" data-live-search-normalize="true">
-                    <option data-hidden="true">{{ text_select_shiping_location }}</option>
-                    {% for custom in estimasi %}
-                <option value="{{ custom.id }}">{{ custom.city }}, {{ custom.zone }}, {{ custom.country }}</option>
-                {% endfor %}
-            </select>
-            </form>
-        </span>
-    <div class="product-info__row__text">
-        <table class="fab-table-shipping-info font-12">
-            <tbody>
-              <tr>
-                <td class="text-gray font-12">
-                    <span>{{ text_shipping_estimation }}</span>
-                </td>
-               <td id="delivery-date" class="text-bold text-right fab-text-action"></td>
-            </tr>
-            <tr>
-                <td class="text-gray font-12">
-                    <span>{{ text_shipping_cost }}</span>
-                </td>
-               <td id="delivery-cost" class="text-bold text-right fab-text-action"></td>
-            </tr>
-        </tbody></table>
-    </div>
-</div>
-               ]]></add>
-        </operation>
-        <operation error="skip">
-            <search><![CDATA[
-                {{ footer }}
-                ]]></search>
-            <add position="before"><![CDATA[
+            {% if hpwbs_status %}
             <script>
-            $('select[name=\'shipping-destination\']').on('change', function() {
-            $.ajax({
-    url: 'index.php?route=product/product/custom&id=' + this.value+'&product_id={{ product_id }}',
-    dataType: 'json',
-    beforeSend: function() {
-      $('select[name=\'shipping-destination\']').prop('disabled', true);
-    },
-    complete: function() {
-      $('select[name=\'shipping-destination\']').prop('disabled', false);
-
-    },
-    success: function(json) {
-     var someDate = new Date();
-          var numberOfDaysToAdd = parseInt(json['etd']);
-
-          var etd = parseInt({{ etd }});
-
-          console.log(etd);
-          var plusDate = numberOfDaysToAdd + etd;
-           someDate.setDate(someDate.getDate() + plusDate);
-
-            var dd = someDate.getDate();
-          var mm = someDate.getMonth() + 1;
-          var y = someDate.getFullYear();
-          let day = '';
-          let m = '';
-
-switch (someDate.getDay()) {
-  case 0:
-    day = "Sunday";
-    break;
-  case 1:
-    day = "Monday";
-    break;
-  case 2:
-     day = "Tuesday";
-    break;
-  case 3:
-    day = "Wednesday";
-    break;
-  case 4:
-    day = "Thursday";
-    break;
-  case 5:
-    day = "Friday";
-    break;
-  case 6:
-    day = "Saturday";
-}
-
-switch (mm) {
-    case 1: m = 'Jan'; break;
-    case 2: m = 'Feb'; break;
-    case 3: m = 'Mar'; break;
-    case 4: m = 'Apr'; break;
-    case 5: m = 'May'; break;
-    case 6: m = 'Jun'; break;
-    case 7: m = 'Jul'; break;
-    case 8: m = 'Aug'; break;
-    case 9: m = 'Sep'; break;
-    case 10: m = 'Oct'; break;
-    case 11: m = 'Nov'; break;
-    case 12: m = 'Dec'; break;
-    default: break;
-}
-          var someFormattedDate = day +', '+ dd + ' '+ m + ' '+ y;
-            var data = "{{ etd }}" + this.value;
-            $('#delivery-date').html(someFormattedDate);
-            $('#delivery-cost').html(json.cost);
-    },
-    error: function(xhr, ajaxOptions, thrownError) {
-      alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-    }
-  });
-
-
-            });
-             $('select[name=\'shipping-destination\']').trigger('change');
-               $(document).ready(function() {
-             $('.selectpicker').prop("disabled", false);
-              $('.selectpicker').selectpicker({
-    liveSearch: true
-  });
-  },5000);
-           </script>
+					$(document).ready(function(){
+						if ($('{{ hpwbs_placement }}').length){
+							$("{{ hpwbs_placement }}").after("<div id='hpwbs'></div>");
+							$('#hpwbs').html('');
+							$('#hpwbs').load('index.php?route=extension/module/custom_shipping&product_id={{ product_id }}');
+						}
+					});
+				</script>
+        {% endif %}
                ]]></add>
         </operation>
 

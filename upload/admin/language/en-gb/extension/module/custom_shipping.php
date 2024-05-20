@@ -11,6 +11,7 @@ $_['column_city']          = 'City';
 $_['column_country']       = 'Country';
 $_['column_etd']           = 'ETD (Days)';
 $_['column_total']         = 'Total';
+$_['column_status']        = 'Status';
 $_['column_action']        = 'Action';
 
 // Entry
@@ -25,10 +26,16 @@ $_['entry_city']          = 'City';
 $_['entry_rate_type']     = 'Rate Type';
 $_['entry_sub_district']  = 'SubDistrict';
 $_['entry_etd']           = 'ETD';
+$_['entry_from_weight']   = 'From Weight';
+$_['entry_to_weight']     = 'To Weight';
 $_['entry_status']        = 'Status';
 $_['entry_default_image'] = 'Shipping image';
 $_['entry_shipping_name'] = 'Shipping Name';
+$_['entry_placement'] = 'Placement on Product Page';
+$_['entry_shipping_status'] = 'Shipping Status';
 $_['entry_shipping_description'] = 'Shipping Description';
+$_['entry_patch_upgrade']                   = 'Patch for Upgrade';
+
 
 // Help
 $_['help_cost']           = 'Additional cost to be applied';
@@ -37,11 +44,14 @@ $_['help_for_every']  	  = 'Next weight range';
 $_['help_rate']           = 'Rate per KG for a shipment package.';
 $_['help_etd']            = 'Estimated Time of Departure in days. Eg: 2 - 3, for 2 - 3 days of ETD.';
 $_['help_total']          = 'Cost checkout before this shipping active. Sub-Total amount needed before the free shipping module becomes available.';
+$_['help_uninstall_table']                 = 'Uninstall all extension setting & functionality including custom tables that created by extensions (if any)';
+$_['help_patch_upgrade']                    = 'Patch for upgrading database';
 
 // Text
 $_['text_all_zone']       = 'All Zones';
 $_['text_flat_rate']      = 'Flat Rate';
 $_['text_per_kg']         = 'Per Kg';
+$_['text_weight_range']   = 'Weight Range';
 $_['text_add']            = 'Add Shipping Rate';
 $_['text_list']           = 'Rate List';
 $_['text_edit']           = 'Edit Rate';
@@ -50,10 +60,14 @@ $_['text_success']        = 'Success: You have modified information module!';
 $_['text_edit']           = 'Edit Information Module';
 $_['text_all_sub_district']   = '-- All SubDistrict --';
 $_['text_all_city']           = '-- All City --';
+$_['text_uninstal_table']          = 'Uninstall Table';
+$_['text_uninstal']                = 'Uninstall';
 
 // Tabs
-$_['tab_free_shipping_list']  = 'Shipping List';
-$_['tab_setting']             = 'Setting';
+$_['tab_free_shipping_list']    = 'Shipping List';
+$_['tab_setting']               = 'Setting';
+$_['tab_advance']               = 'Advance';
+$_['tab_help']                  = 'Help';
 
 // Error
 $_['error_permission'] = 'Warning: You do not have permission to modify information module!';
@@ -65,9 +79,11 @@ $_['text_install_message']      = 'Missing Database Tables for <b>Weight Based S
 $_['text_uninstall_message']    = 'You have installed <b>Weight Based Shipping</b>. Click Here to uninstall it Now';
 $_['text_upgrade']              = 'Install Database';
 $_['text_downgrade']            = 'Uninstall Database';
+$_['text_upgrade_version']     = 'New version of this extension is available. Download it <strong><a href="https://my.hpwebdesign.io" target="_blank">HERE</a></strong>';
 
 // Error
 $_['error_etd']              = 'Please insert ETD!';
+$_['error_rate']              = 'Please insert Rate!';
 $_['error_country_id']       = 'Please select a Country!';
 $_['error_city_id']          = 'Please select a City!';
 $_['error_zone_id']          = 'Please select a Zone!';
@@ -78,6 +94,14 @@ $_['error_warning']          = 'Warning: Please check the form carefully for err
 
 // Success
 $_['text_success_seting_changed']  = 'Success: You have modified Weight Based Shipping setting.';
+
+// Success
+$_['success_install']   = 'Success: Installation Succeed!';
+$_['success_uninstall'] = 'Success: Uninstallation Succeed!';
+
+// Button
+$_['button_uninstall_table']  = 'Uninstall Table';
+$_['button_upgrade_database'] = 'Upgrade Database';
 
 
 $_['text_validation']           = 'Store Validation';

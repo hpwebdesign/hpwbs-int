@@ -1,121 +1,304 @@
 {{ header }}{{ column_left }}
+
 <div id="content">
-  <div class="page-header">
-    <div class="container-fluid">
-      <div class="pull-right"><a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
-        <button type="button" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ text_confirm }}') ? ('#form-custom_shipping').submit() : false;"><i class="fa fa-trash-o"></i></button>
-      </div>
-      <h1>{{ heading_title }}</h1>
-      <ul class="breadcrumb">
-        {% for breadcrumb in breadcrumbs %}
-        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-  <div class="container-fluid">
-    {% if error_warning %}
-    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-    {% endif %}
-    {% if success %}
-    <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-    {% endif %}
+	<link href="view/javascript/bs-colorpicker/css/colorpicker.css" media="screen" rel="stylesheet" type="text/css"/>
+	<script src="view/javascript/bs-colorpicker/js/colorpicker.js" type="text/javascript"></script>
+	<script src="view/javascript/jquery/jquery-ui/jquery-ui.js"></script>
+  <script src="view/javascript/bootstrap/js/bootstrap-checkbox.min.js"></script>
+	<link type="text/css" href="view/javascript/desktop_theme.css" rel="stylesheet" media="screen"/>
+	<div class="page-header">
+		<div class="container-fluid">
+			{# <div class="pull-right">
+				<button type="submit" id="button-save" form="form-setting" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-info">{{ button_save }}
+				</button>
+			</div> #}
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li>
+						<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-list"></i> {{ text_list }}</h3>
-      </div>
-     <div class="panel-body">
-           <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab-shipping-area" data-toggle="tab"><i class="fa fa-home"></i> {{ tab_free_shipping_list }}</a></li>
-            <li><a href="#tab-setting" data-toggle="tab"><i class="fa fa-question-circle"></i> {{ tab_setting }}</a></li>
-          </ul>
-        <div class="tab-content">
-           <div class="tab-pane active" id="tab-shipping-area">
-        <form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-custom_shipping">
-          <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
-                  <td class="text-left">{{ column_country }}</td>
-                  <td class="text-left">{{ column_zone }}</td>
-<!--                  <td class="text-left">{{ column_city }}</td>-->
-                  <td class="text-right">{{ column_total }}</td>
-                   <td class="text-right">{{ column_etd }}</td>
-                   <td class="text-right">{{ column_rate }}</td>
-                  <td class="text-right">{{ column_action }}</td>
-                </tr>
-              </thead>
-              <tbody>
-                {% if custom_shippings %}
-                {% for custom_shipping in custom_shippings %}
-                <tr>
-                  <td class="text-center">{% if custom_shipping.custom_shipping_id in selected %}
-                    <input type="checkbox" name="selected[]" value="{{ custom_shipping.custom_shipping_id }}" checked="checked" />
-                    {% else %}
-                    <input type="checkbox" name="selected[]" value="{{ custom_shipping.custom_shipping_id }}" />
-                    {% endif %}
-                  <td class="text-left">{{ custom_shipping.country_name }}</td>
-                  <td class="text-left">{{ custom_shipping.zone_name }}</td>
-<!--                  <td class="text-left">{{ custom_shipping.city_name }}</td>-->
-                  <td class="text-right">{{ custom_shipping.total }}</td>
-                  <td class="text-right">{{ custom_shipping.etd }}</td>
-                  <td class="text-right">{{ custom_shipping.rate }}</td>
-                  <td class="text-right"><a href="{{ custom_shipping.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
-                </tr>
-                      {% endfor %}
-                {% else %}
-                <tr>
-                  <td class="text-center" colspan="7">{{ text_no_results }}</td>
-                </tr>
-                {% endif %}
-              </tbody>
-            </table>
-          </div>
-        </form>
-        <div class="row">
-          <div class="col-sm-6 text-left">{{ pagination }}</div>
-          <div class="col-sm-6 text-right">{{ results }}</div>
-        </div>
-            </div>
-            <div class="tab-pane" id="tab-setting">
-                <div class="pull-right">
-                    <button type="submit" form="form-setting" data-toggle="tooltip" title="{{ button_save }}" onclick="('#form-setting').submit()" class="btn btn-primary"><i class="fa fa-save"></i> {{ button_save }}</button>
-                </div>
+	<div class="container-fluid">
+		{% if success %}
+			<div class="alert alert-success">
+				<i class="fa fa-check-circle"></i>
+				{{ success }}
+				<button class="close" data-dismiss="alert" type="button">&times;</button>
+			</div>
+		{% endif %}
+		{% if error_warning %}
+			<div class="alert alert-danger alert-dismissible">
+				<i class="fa fa-exclamation-circle"></i>
+				{{ error_warning }}
+				<button class="close" data-dismiss="alert" type="button">&times;</button>
+			</div>
+		{% endif %}
 
-    <div class="clearfix"></div>
+		
+			<div class="panel-wrapper">
 
-    <form action="{{ save }}" class="form-horizontal" method="post" enctype="multipart/form-data" id="form-setting">
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="input-shipping-name">{{ entry_shipping_name }}</label>
-             <div class="col-sm-10">
-            <input type="text" name="c_shipping_name" class="form-control" value="{{ c_shipping_name }}" />
-            </div>
-        </div>
+				<div class="panel-left">
+        
+					<div class="setting-header">v
+						{{ version }}</div>
+					<ul class="menu list-unstyled">
+            <li class="active">
+              <a id="shipping-area" href="#tab-shipping-area" data-toggle="tab">
+                <i class="fa fa-home"></i>
+                {{ tab_free_shipping_list }}</a>
+            </li>
+            <li>
+              <a id="setting" href="#tab-setting" data-toggle="tab">
+                <i class="fa fa-question-circle"></i>
+                {{ tab_setting }}</a>
+            </li>
+            <li>
+              <a data-toggle="tab" href="#tab-advance">
+                <i class="fa fa-gears fw"></i>
+                <span class="hidden-xs">{{ tab_advance }}</span>
+              </a>
+            </li>
+						<li>
+							<a data-toggle="tab" href="#tab-help">
+								<i class="fa fa-question-circle"></i>
+								{{ tab_help }}</a>
+						</li>
+					</ul>
+				</div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="input-shipping-description">{{ entry_shipping_description }}</label>
-             <div class="col-sm-10">
-            <input type="text" name="c_shipping_description" class="form-control" value="{{ c_shipping_description }}" />
-            </div>
-        </div>
+				<div class="panel-right">
+					<div class="store-header">
+<div class="pull-right">
+	<a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary shipping-area">
+		<i class="fa fa-plus"></i>
+	</a>
+	<button type="button" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger shipping-area" onclick="confirm('{{ text_confirm }}') ? actionShipping() : false;">
+		<i class="fa fa-trash-o"></i>
+	</button>
+<button type="submit" form="form-setting" data-toggle="tooltip" title="{{ button_save }}" onclick="('#form-setting').submit()" class="btn btn-primary setting">
+	<i class="fa fa-save"></i>
+	{{ button_save }}</button>
 
-        <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-image">{{ entry_default_image }}</label>
-                <div class="col-sm-10"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="{{ thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
-                  <input type="hidden" name="c_shipping_image" value="{{ c_shipping_image }}" id="input-image" />
+</div>
+
+					</div>
+
+					<div class="main-content">
+						<div class="tab-content">
+							<div class="clearfix"></div>
+              <div class="tab-pane active" id="tab-shipping-area">
+               
+                <div class="clearfix"></div>
+
+                <form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-custom_shipping">
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="('input[name*=\'selected\']').prop('checked', this.checked);"/></td>
+                          <td class="text-left">{{ column_country }}</td>
+                          <td class="text-left">{{ column_zone }}</td>
+                          <td class="text-right">{{ column_total }}</td>
+                          <td class="text-right">{{ column_etd }}</td>
+                          <td class="text-right">{{ column_rate }}</td>
+                          <td class="text-center">{{ column_status }}</td>
+                          <td class="text-right">{{ column_action }}</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% if custom_shippings %}
+                          {% for custom_shipping in custom_shippings %}
+                            <tr>
+                              <td class="text-center">
+                                {% if custom_shipping.custom_shipping_id in selected %}
+                                  <input type="checkbox" name="selected[]" value="{{ custom_shipping.custom_shipping_id }}" checked="checked"/>
+                                {% else %}
+                                  <input type="checkbox" name="selected[]" value="{{ custom_shipping.custom_shipping_id }}"/>
+                                {% endif %}
+                              </td>
+                              <td class="text-left">{{ custom_shipping.country_name }}</td>
+                              <td class="text-left">{{ custom_shipping.zone_name }}</td>
+                              <td class="text-right">{{ custom_shipping.total }}</td>
+                              <td class="text-right">{{ custom_shipping.etd }}</td>
+                              <td class="text-right">{{ custom_shipping.rate }}</td>
+                              <td class="text-center">{% if custom_shipping.status %}<span class="label label-success">{{ text_enabled }}</span>
+                              {% else %}
+                                <span class="label label-danger">{{ text_disabled}}</span>
+                              {% endif %}</td>
+                              <td class="text-right">
+                                <a href="{{ custom_shipping.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary">
+                                  <i class="fa fa-pencil"></i>
+                                </a>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        {% else %}
+                          <tr>
+                            <td class="text-center" colspan="7">{{ text_no_results }}</td>
+                          </tr>
+                        {% endif %}
+                      </tbody>
+                    </table>
+                  </div>
+                </form>
+                <div class="row">
+                  <div class="col-sm-6 text-left">{{ pagination }}</div>
+                  <div class="col-sm-6 text-right">{{ results }}</div>
                 </div>
               </div>
+
+              <div class="tab-pane" id="tab-setting">
+               
+                <div class="clearfix"></div>
+
+                <form action="{{ save }}" class="form-horizontal" method="post" enctype="multipart/form-data" id="form-setting">
+
+
+
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="input-shipping-name">{{ entry_shipping_status }}</label>
+                    <div class="col-sm-10">
+                    <input type="checkbox" name="c_shipping_status" data-control="checkbox" value="1" data-off-label="{{ text_no }}" data-on-label="{{ text_yes }}" {% if c_shipping_status %} checked="checked" {% endif %}/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="input-shipping-name">{{ entry_shipping_name }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="c_shipping_name" id="input-shipping-name" class="form-control" value="{{ c_shipping_name }}"/>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="input-shipping-description">{{ entry_shipping_description }}</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="c_shipping_description" class="form-control" value="{{ c_shipping_description }}"/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-sm-2" for="input-shipping-name">{{ entry_placement }}</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="c_shipping_placement" id="input-shipping-name" class="form-control" value="{{ c_shipping_placement }}"/>
+                    </div>
+                  </div>
+
+
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-image">{{ entry_default_image }}</label>
+                    <div class="col-sm-10">
+                      <a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="{{ thumb }}" alt="" title="" data-placeholder="{{ placeholder }}"/></a>
+                      <input type="hidden" name="c_shipping_image" value="{{ c_shipping_image }}" id="input-image"/>
+                    </div>
+                  </div>
                 </form>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
+              </div>
+
+              <div class="tab-pane" id="tab-advance">
+            <form action="{{ save }}" class="form-horizontal" method="post" enctype="multipart/form-data" id="setting-form">
+                <div class="form-group">
+                  <label class="col-sm-3">
+                    {{ text_uninstal_table }}
+                    <span class="help">{{ help_uninstall_table }}</span>
+                  </label>
+                  <div class="col-sm-9">
+                    <span onclick="confirm('{{ text_confirm }}') ? location.href='{{ uninstall }}' : false;" class="btn btn-danger">
+                      <i class="fa fa-trash"></i>
+                      {{ text_uninstal }}</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-3">
+                    {{ entry_patch_upgrade }}
+                    <span class="help">{{ help_patch_upgrade }}</span>
+                  </label>
+                  <div class="col-sm-9">
+                    <button type="button" id="upgrade-database" data-loading-text="{{ text_loading }}" class="btn btn-primary">
+                      <i class="fa fa-database" aria-hidden="true"></i>
+                      {{ button_upgrade_database }}
+                    </button>
+                  </div>
+                </div>
+                </form>
+              </div>
+
+							<div class="tab-pane" id="tab-help">
+								<br>
+								<div id="license"></div>
+								<div id="support"></div>
+								<script type="text/javascript">
+									$('#support').load('index.php?route=common/hp_validate/support&user_token={{ user_token }}');
+                  $('#license').load('index.php?route=common/hp_validate/license&user_token={{ user_token }}&code={{ extension_code }}&version={{ version }}');
+								</script>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+	</div>
 </div>
+
+
+<style>
+	.help {
+		color: #888;
+		font-weight: normal;
+		font-size: 11px;
+		display: block;
+		margin-top: 3px;
+		margin-bottom: 10px;
+		font-style: italic;
+	}
+</style>
+<script>
+function actionShipping() {
+$('#form-custom_shipping').submit();
+}
+$(document).ready(function() {
+  $('.shipping-area').show();
+  $('.setting').hide();
+  $('#shipping-area').on('click',function(){
+    $('.shipping-area').show();
+    $('.setting').hide();
+
+  });
+  $('#setting').on('click',function(){
+    $('.shipping-area').hide();
+    $('.setting').show();
+
+  });
+$.get("https://hpwebdesign.{{extension_type}}/index.php?route=common/extension/version&code={{ extension_code }}&oc=3.0.x.x", function (data, status) {
+				const version = "{{ version }}".replace(/\D/g, '');
+				const latest_version = data.replace(/\D/g, '');
+				if (version < latest_version) {
+					$('form').parent().prepend(`<div class="alert alert-danger">
+	<i class="fa fa-exclamation-circle"></i>
+	{{ text_upgrade_version }}
+</div>`);
+			}
+  });
+
+  $("#upgrade-database").click(function () {
+		$("#upgrade-database").button('loading');
+		$.get('index.php?route=extension/module/custom_shipping/patch&user_token={{ user_token }}', function (data) {
+			if (data['success']) {
+				$("#upgrade-database").button('reset');
+				$("<div class='alert alert-success slideUp'><i class='fa fa-check-circle'></i> {{ text_success_installed }}<button type='button' class='close' data-dismiss='alert'>&times;</button></div>").insertBefore(".panel.panel-default");
+			}
+		})
+	});
+if ($.fn.checkboxpicker) {
+			$('[data-control=checkbox]').checkboxpicker({onClass: 'btn-info'});
+		}
+
+		$('.btn-group .btn').addClass('btn-sm');
+});
+</script>
+
 {{ footer }}
+
