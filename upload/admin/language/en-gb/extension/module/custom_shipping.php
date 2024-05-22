@@ -33,6 +33,9 @@ $_['entry_default_image'] = 'Shipping image';
 $_['entry_shipping_name'] = 'Shipping Name';
 $_['entry_placement'] = 'Placement on Product Page';
 $_['entry_shipping_status'] = 'Shipping Status';
+$_['entry_shipping_discount'] = 'Shipping Discount';
+$_['entry_shipping_discount_total'] = 'When reach total';
+$_['entry_shipping_discount_percent'] = 'Discount';
 $_['entry_shipping_description'] = 'Shipping Description';
 $_['entry_patch_upgrade']                   = 'Patch for Upgrade';
 

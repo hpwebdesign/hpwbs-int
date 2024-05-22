@@ -289,6 +289,30 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 			$data['c_shipping_status'] = 0;
 		}
 
+		if (isset($this->request->post['c_shipping_discount_status'])) {
+			$data['c_shipping_discount_status'] = $this->request->post['c_shipping_discount_status'];
+		} else if ($this->config->get('c_shipping_discount_status')) {
+			$data['c_shipping_discount_status'] = $this->config->get('c_shipping_discount_status');
+		} else {
+			$data['c_shipping_discount_status'] = 0;
+		}
+
+		if (isset($this->request->post['c_shipping_discount_total'])) {
+			$data['c_shipping_discount_total'] = $this->request->post['c_shipping_discount_total'];
+		} else if ($this->config->get('c_shipping_discount_total')) {
+			$data['c_shipping_discount_total'] = $this->config->get('c_shipping_discount_total');
+		} else {
+			$data['c_shipping_discount_total'] = '';
+		}
+
+		if (isset($this->request->post['c_shipping_discount_percent'])) {
+			$data['c_shipping_discount_percent'] = $this->request->post['c_shipping_discount_percent'];
+		} else if ($this->config->get('c_shipping_discount_percent')) {
+			$data['c_shipping_discount_percent'] = $this->config->get('c_shipping_discount_percent');
+		} else {
+			$data['c_shipping_discount_percent'] = '';
+		}
+
 		if (isset($this->request->post['c_shipping_name'])) {
 			$data['c_shipping_name'] = $this->request->post['c_shipping_name'];
 		} else if($this->config->get('c_shipping_name')) {
@@ -367,14 +391,15 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		$data['pagination'] = $pagination->render();
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($custom_shipping_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($custom_shipping_total - $this->config->get('config_limit_admin'))) ? $custom_shipping_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $custom_shipping_total, ceil($custom_shipping_total / $this->config->get('config_limit_admin')));
-
+		$data['currency_symbol_left'] = $this->currency->getSymbolLeft($this->config->get('config_currency'));
+		$data['currency_symbol_right'] = $this->currency->getSymbolRight($this->config->get('config_currency'));
 		$data['sort'] = $sort;
 		$data['order'] = $order;
 		$data['user_token'] = $this->session->data['user_token'];
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
-
+		
 		$this->response->setOutput($this->load->view('extension/module/custom_shipping_list', $data));
 	}
 

@@ -12,16 +12,17 @@ class ModelExtensionShippingCustomShipping extends Model {
 			$status = false;
 		}
     if ($status) {
-        $query = $this->db->query("SELECT DISTINCT * FROM ".DB_PREFIX."custom_shipping WHERE (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = 0) AND status = 1 ORDER BY zone_id DESC");
+      $query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "custom_shipping WHERE (country_id ='" . (int) $address['country_id'] . "' OR country_id = 0) AND (zone_id = '" . (int) $address['zone_id'] . "' OR zone_id = 0) AND status = 1 ORDER BY country_id DESC, zone_id DESC");
+        
         
         $costs = array();
         
      if ($query->num_rows) {
       $status = true;
     } else {
+
+        $query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "custom_shipping WHERE (zone_id = '" . (int) $address['zone_id'] . "' OR zone_id = 0) AND status = 1 ORDER BY country_id DESC, zone_id DESC");
           
-               
-           $query = $this->db->query("SELECT DISTINCT * FROM ".DB_PREFIX."custom_shipping WHERE (country_id ='".(int)$address['country_id']."' OR country_id = 0) AND zone_id = '0' AND status = 1 ORDER BY country_id DESC");
               
             if ($query->num_rows) {
                 $status = true;  
@@ -109,9 +110,16 @@ class ModelExtensionShippingCustomShipping extends Model {
                  $image = $thumb;
                 }
       if ($status) {
+        $title =  $this->config->get('c_shipping_name') ? $this->config->get('c_shipping_name') : $this->language->get('text_name');
+        if ($this->config->get('c_shipping_discount_status')) {
+             if ($this->cart->getSubTotal() > (float)$this->config->get('c_shipping_discount_total')) {
+                $title .= ' ('. $this->config->get('c_shipping_discount_percent').'% discount)';
+                $cost = $cost - ($cost * ((float)$this->config->get('c_shipping_discount_total') / 100));
+             }
+        }
       $quote_data['custom_shipping'] = array(
         'code'         => 'custom_shipping.custom_shipping',
-        'title'        => $this->config->get('c_shipping_description') ? $this->config->get('c_shipping_description') : $this->language->get('text_description'),
+        'title'        => $title,
         'cost'         => $cost,
         'text_kg'      => $this->language->get('text_kg'),
         'text_day'     => $this->language->get('text_day'),

@@ -185,8 +185,6 @@
                       <input type="text" name="c_shipping_placement" id="input-shipping-name" class="form-control" value="{{ c_shipping_placement }}"/>
                     </div>
                   </div>
-
-
                   <div class="form-group">
                     <label class="col-sm-2 control-label" for="input-image">{{ entry_default_image }}</label>
                     <div class="col-sm-10">
@@ -194,6 +192,32 @@
                       <input type="hidden" name="c_shipping_image" value="{{ c_shipping_image }}" id="input-image"/>
                     </div>
                   </div>
+
+<div class="form-group">
+	<label class="control-label col-sm-2" for="input-shipping-discount">{{ entry_shipping_discount }}</label>
+	<div class="col-sm-2">
+      <input type="checkbox" name="c_shipping_discount_status" id="input-shipping-discount" data-control="checkbox" value="1" data-off-label="{{ text_no }}" data-on-label="{{ text_yes }}" {% if c_shipping_discount_status %} checked="checked" {% endif %}/>
+        </div>
+      <div class="col-sm-3" id="input-discount-total" style="display:{% if c_shipping_discount_status %}block{% else %}none{% endif %};">
+      <div class="input-group">
+      {% if currency_symbol_left %}
+        <span class="input-group-addon">{{ currency_symbol_left }}</span>
+      {% endif %}
+      <input type="number" name="c_shipping_discount_total" value="{{ c_shipping_discount_total }}" placeholder="{{ entry_shipping_discount_total }}" class="form-control"/>
+      {% if currency_symbol_right %}
+        <span class="input-group-addon">{{ currency_symbol_right }}</span>
+      {% endif %}
+      </div>
+      </div>
+      <div class="col-sm-3" id="input-discount-percent" style="display:{% if c_shipping_discount_status %}block{% else %}none{% endif %};">
+          <div class="input-group">
+          <input type="text"  name="c_shipping_discount_percent" placeholder="{{ entry_shipping_discount_percent }}" class="form-control" value="{{ c_shipping_discount_percent }}"/>
+              <span class="input-group-addon">%</span>
+          </div>
+      </div>
+
+</div>
+
                 </form>
               </div>
 
@@ -260,6 +284,16 @@ function actionShipping() {
 $('#form-custom_shipping').submit();
 }
 $(document).ready(function() {
+$('#input-shipping-discount').on('change',function() {
+  if ($(this).is(':checked')) {
+      $('#input-discount-percent').show();
+      $('#input-discount-total').show();
+  } else {
+      $('#input-discount-percent').hide();
+      $('#input-discount-total').hide();
+  }
+})
+
   $('.shipping-area').show();
   $('.setting').hide();
   $('#shipping-area').on('click',function(){
