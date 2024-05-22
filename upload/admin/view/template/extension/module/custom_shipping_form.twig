@@ -356,7 +356,7 @@ var weight_row ={{ weight_row }};
 
          },
          success: function(json) {
-           html = '<option value="">{{ text_all_zone }}</option>';
+           html = '<option value="">{{ text_select }}</option>';
 
            if (json['zone'] && json['zone'] != '') {
              for (i = 0; i < json['zone'].length; i++) {
@@ -370,7 +370,8 @@ var weight_row ={{ weight_row }};
 
              }
            } else {
-             html += '<option value="0" selected="selected">All Zones</option>';
+              html += '<option value="0" selected="selected">{{ text_all_zone }}</option>';
+
            }
 
           $('select[name=\'zone_id\']').html(html);
