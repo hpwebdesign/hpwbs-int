@@ -114,7 +114,7 @@ class ModelExtensionShippingCustomShipping extends Model {
         if ($this->config->get('c_shipping_discount_status')) {
              if ($this->cart->getSubTotal() > (float)$this->config->get('c_shipping_discount_total')) {
                 $title .= ' ('. $this->config->get('c_shipping_discount_percent').'% discount)';
-                $cost = $cost - ($cost * ((float)$this->config->get('c_shipping_discount_total') / 100));
+                $cost = $cost - ((float)$this->config->get('c_shipping_discount_total') + ($cost * ((float)$this->config->get('c_shipping_discount_percent') / 100)));
              }
         }
       $quote_data['custom_shipping'] = array(

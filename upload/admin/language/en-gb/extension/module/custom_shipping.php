@@ -12,6 +12,7 @@ $_['column_country']       = 'Country';
 $_['column_etd']           = 'ETD (Days)';
 $_['column_total']         = 'Total';
 $_['column_status']        = 'Status';
+$_['column_cost']          = 'Cost';
 $_['column_action']        = 'Action';
 
 // Entry
